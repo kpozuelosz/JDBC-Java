@@ -121,4 +121,26 @@ public class PrestamoDAO {
         String fechaPrestamo = resultado.getDate("fecha_prestamo").toLocalDate().toString();
         return new PrestamoDetalle(tituloLibro, nombreEstudiante, fechaPrestamo);
     }
+
+    /**
+     * EJERCICIO PROPUESTO (para la casa): cuantas veces se ha prestado un
+     * libro especifico en toda su historia, no solo los prestamos activos.
+     * Primer contacto con una funcion de agregacion SQL (COUNT).
+     */
+    public int contarPrestamosPorLibro(int libroId) throws SQLException {
+        String sql = "SELECT COUNT(*) AS total FROM prestamos WHERE libro_id = ?";
+
+        try (Connection conexion = DriverManager.getConnection(URL, USUARIO, PASSWORD);
+             PreparedStatement statement = conexion.prepareStatement(sql)) {
+
+            statement.setInt(1, libroId);
+
+            try (ResultSet resultado = statement.executeQuery()) {
+                if (resultado.next()) {
+                    return resultado.getInt("total");
+                }
+                return 0;
+            }
+        }
+    }
 }
